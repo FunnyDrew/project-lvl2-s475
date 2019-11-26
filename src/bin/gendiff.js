@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import path from 'path';
 import command from 'commander';
 import gendiff from '..';
 
@@ -8,16 +9,13 @@ program
   .option('-V, --version', 'output the version number', '1.0.0')
   .option('-f, --format [type]', 'output format')
   .arguments('<firstConfig> <secondConfig>')
-  .action(function (firstConfig, secondConfig) {
-    const init = process.cwd();
-    const first = init+firstConfig;
-    const second = init+secondConfig;
-    const data = gendiff(first, second);
+  .action((firstFile, secondFile) => {
+    const cwd = process.cwd();
+    const firstFilePath = path.resolve(cwd, firstFile);
+    const secondFilePath = path.resolve(cwd, secondFile);
+    const data = gendiff(firstFilePath, secondFilePath);
     console.log(data);
   });
 
-//const fnc = gendiff('../__tests__/__fixtures__/before.json', '../__tests__/__fixtures__/after.json');
-//console.log(fnc);
-
 export default gendiff;
- program.parse(process.argv);
+program.parse(process.argv);

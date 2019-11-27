@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import parser from './parser';
+
 const objToConfigStr = (obj) => {
   const keys = Object.keys(obj);
   return keys.reduce((acc, key) => `${acc}\n+ ${key}: ${obj[key]}`, '');

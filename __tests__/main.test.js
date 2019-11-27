@@ -7,24 +7,14 @@ const curentDir = __dirname;
 
 describe.each([
   [path.resolve(curentDir, '__fixtures__/before.json'), path.resolve(curentDir, '__fixtures__/after.json'),
-    path.resolve(curentDir, '__fixtures__/result')],
+    path.resolve(curentDir, '__fixtures__/result'), 'json'],
   [path.resolve(curentDir, '__fixtures__/before.json'), path.resolve(curentDir, '__fixtures__/after.json'),
-    path.resolve(curentDir, '__fixtures__/result')],
+    path.resolve(curentDir, '__fixtures__/result'), 'yml'],
   [path.resolve(curentDir, '__fixtures__/before.json'), path.resolve(curentDir, '__fixtures__/after.json'),
-    path.resolve(curentDir, '__fixtures__/result')],
+    path.resolve(curentDir, '__fixtures__/result'), 'ini'],
 
-])('testing plain files', (pathFirstFile, pathSecondFile, fileResult) => {
-  test('test json functionality', () => {
-    const dataResult = fs.readFileSync(fileResult, 'utf-8');
-    expect(gendiff(pathFirstFile, pathSecondFile)).toBe(dataResult);
-  });
-
-  test('test yaml functionality', () => {
-    const dataResult = fs.readFileSync(fileResult, 'utf-8');
-    expect(gendiff(pathFirstFile, pathSecondFile)).toBe(dataResult);
-  });
-
-  test('test ini functionality', () => {
+])('testing plain files', (pathFirstFile, pathSecondFile, fileResult, naming) => {
+  test(`test ${naming} functionality`, () => {
     const dataResult = fs.readFileSync(fileResult, 'utf-8');
     expect(gendiff(pathFirstFile, pathSecondFile)).toBe(dataResult);
   });

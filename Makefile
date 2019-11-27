@@ -12,4 +12,4 @@ install:
 	npm link
 
 test:
-	npx jest 
+	npx jest

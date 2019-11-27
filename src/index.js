@@ -1,16 +1,15 @@
 import _ from 'lodash';
 import parser from './parser';
+const objToConfigStr = (obj) => {
+  const keys = Object.keys(obj);
+  return keys.reduce((acc, key) => `${acc}\n+ ${key}: ${obj[key]}`, '');
+};
 
 
 const diff = (firstFilePath, secondFilePath) => {
   const objBefore = parser(firstFilePath);
 
   const objAfter = parser(secondFilePath);
-
-  const objToConfigStr = (obj) => {
-    const keys = Object.keys(obj);
-    return keys.reduce((acc, key) => `${acc}\n+ ${key}: ${obj[key]}`, '');
-  };
 
   const keys = Object.keys(objBefore);
 

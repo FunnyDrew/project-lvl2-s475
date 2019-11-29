@@ -1,8 +1,16 @@
 {
-  "host": "hexlet.io",
-  "timeout": 30,    
-  "follow": false,
-  "name": "fixture",
-  "more": 3456,
-  "true": true
+  "time": 10,
+  "host": "hexlet.io",  
+  "add": {
+    "time":50,
+    "callback": {
+      "back": "mack"
+    }
+  },
+  "travis": true,
+  "bob": "job",
+  "news": {
+    "paper": "white",
+    "size": 100
+  }
 }

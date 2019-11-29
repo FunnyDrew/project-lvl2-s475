@@ -1,7 +1,8 @@
 ---
-
 host: "hexlet.io"
-timeout: 30
+timeout: 
+  scott: 40
+  tim: "barton"
 follow: false
 name: "fixture"
 more: 3456

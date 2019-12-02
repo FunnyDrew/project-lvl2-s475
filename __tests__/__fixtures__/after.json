@@ -1,16 +1,14 @@
 {
-  "time": 10,
-  "host": "hexlet.io",  
-  "add": {
-    "time":50,
-    "callback": {
-      "back": "mack"
+  "host": "hexlet.io",
+  "time": 20,
+  "common": {
+    "follow": false,    
+    "setting3": {
+      "key": "value"
+    },
+    "setting6": {
+      "key": "value",
+      "ops": "vops"
     }
-  },
-  "travis": true,
-  "bob": "job",
-  "news": {
-    "paper": "white",
-    "size": 100
   }
 }

@@ -1,14 +1,10 @@
 {
-  "time": 30,
-  "host": "hexlet.io",  
-  "add": {
-    "time":50,
-    "callback": {
-      "back": "pack"
-    }    
-  },
-  "travis":{
-    "bob": "job"
-  },
-  "bob": "job"
+  "host": "hexlet.io",
+  "time": 10,
+  "common": {    
+    "setting3": true,
+    "setting6": {
+      "key": "value"
+    }
+  }
 }

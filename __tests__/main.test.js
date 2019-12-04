@@ -8,10 +8,10 @@ const curentDir = __dirname;
 describe.each([
   [path.resolve(curentDir, '__fixtures__/before.json'), path.resolve(curentDir, '__fixtures__/after.json'),
     path.resolve(curentDir, '__fixtures__/result'), 'json'],
-/*  [path.resolve(curentDir, '__fixtures__/before.yml'), path.resolve(curentDir, '__fixtures__/after.yml'),
+  [path.resolve(curentDir, '__fixtures__/before.yml'), path.resolve(curentDir, '__fixtures__/after.yml'),
     path.resolve(curentDir, '__fixtures__/result'), 'yml'],
   [path.resolve(curentDir, '__fixtures__/before.ini'), path.resolve(curentDir, '__fixtures__/after.ini'),
-    path.resolve(curentDir, '__fixtures__/result'), 'ini'],*/
+    path.resolve(curentDir, '__fixtures__/result'), 'ini'],
 
 ])('testing plain files', (pathFirstFile, pathSecondFile, fileResult, naming) => {
   test(`test ${naming} functionality`, () => {

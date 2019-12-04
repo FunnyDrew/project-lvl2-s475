@@ -1,14 +1,17 @@
 import _ from 'lodash';
 import parser from './parser';
 
+const makeIndent = (level) => `${' '.repeat(2 * (2 * level + 1))}`;
+
 const stringify = (obj, indentLevel, accStr) => {
   const keys = Object.keys(obj);
-  return keys.reduce((keyAcc, key) => {
+  const result = keys.reduce((keyAcc, key) => {
     const newIndentLevel = indentLevel + 1;
-    const value = obj[key] instanceof Object ? stringify(obj[key], newIndentLevel, accStr)
-      : `${obj[key]}    level = ${newIndentLevel}`;
-    return `${keyAcc}\n${key}: ${value}`;
-  }, accStr);
+    const value = obj[key] instanceof Object ? `${stringify(obj[key], newIndentLevel, accStr)}`
+      : `${obj[key]}`;
+    return `${keyAcc}\n  ${makeIndent(newIndentLevel)}${key}: ${value}`;
+  }, '');
+  return `{${result}\n  ${makeIndent(indentLevel)}}`;
 };
 
 const states = {
@@ -17,21 +20,20 @@ const states = {
   added: '+',
 };
 
-const getItemForPrint = (obj, indent) => (obj instanceof Object ? stringify(obj, indent, '') : `${obj}  level=${indent}`);
-
+const getItemForPrint = (obj, indent) => (obj instanceof Object ? stringify(obj, indent, '') : `${obj}`);
 
 const astRender = (diffTree, level, strAcc) => diffTree.reduce((accKey, curObj) => {
   if (_.has(states, curObj.state)) {
-    return `${accKey}\n${states[curObj.state]} ${curObj.key}: ${getItemForPrint(curObj.value, level)}`;
+    return `${accKey}\n${makeIndent(level)}${states[curObj.state]} ${curObj.key}: ${getItemForPrint(curObj.value, level)}`;
   }
   if (curObj.children.length < 1) {
     const obj1 = curObj.value[0];
     const obj2 = curObj.value[1];
-    return `${accKey}\n - ${curObj.key}: ${getItemForPrint(obj1, level)}\n+ ${curObj.key}: ${getItemForPrint(obj2, level)}`;
+    return `${accKey}\n${makeIndent(level)}- ${curObj.key}: ${getItemForPrint(obj1, level)}\n${makeIndent(level)}+ ${curObj.key}: ${getItemForPrint(obj2, level)}`;
   }
   const arg = curObj.children;
-  const levelup = level +1;
-  return `${accKey}\n  ${curObj.key}:   level=${level} ${astRender(arg, levelup, strAcc)}`;
+  const levelup = level + 1;
+  return `${accKey}\n${makeIndent(level)}  ${curObj.key}: {${astRender(arg, levelup, strAcc)}\n  ${makeIndent(level)}}`;
 },
 strAcc);
 
@@ -65,19 +67,20 @@ const diff = (firstFilePath, secondFilePath) => {
         }];
       }
 
-      return [...firstAcc, { key: curKey, state: 'changed', value: [firstObj[curKey], secondObj[curKey]], children: [] }];
+      return [...firstAcc, {
+        key: curKey, state: 'changed', value: [firstObj[curKey], secondObj[curKey]], children: [],
+      }];
     }, acc);
 
     const omitedObj = _.omit(secondObj, firstObjKeys);
 
     const omitedKeys = Object.keys(omitedObj);
 
-    return omitedKeys.reduce((acc, item) => [...acc, { key: item, state: 'added', value: omitedObj[item] }], mainDiff);
+    return omitedKeys.reduce((omitedAcc, item) => [...omitedAcc, { key: item, state: 'added', value: omitedObj[item] }], mainDiff);
   };
 
   const ast = makeDiffAST(objBefore, objAfter, []);
-  console.log(astRender(ast, 0, ''));
-  return astRender(ast, 0, '');
+  return `{${astRender(ast, 0, '')}\n}`;
 };
 
 

@@ -12,7 +12,7 @@ install:
 	npm link
 
 test:
-	npx jest
+	npm test
 
 test-coverage:
-	npx jest --coverage
+	npm test -- --coverage

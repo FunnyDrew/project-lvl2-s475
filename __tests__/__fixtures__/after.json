@@ -1,6 +1,4 @@
 {
-  "host": "hexlet.io",
-  "time": 20,
   "common": {
     "follow": false,
     "setting1": "Value 1",

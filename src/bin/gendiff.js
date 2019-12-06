@@ -7,7 +7,7 @@ const program = command;
 program
   .description('Compares two configuration files and shows a difference.')
   .option('-V, --version', 'output the version number', '1.0.0')
-  .option('-f, --format [plain, tree = default]', 'output format')
+  .option('-f, --format [plain, json, tree = default]', 'output format')
   .arguments('<firstConfig> <secondConfig>')
   .action((firstFile, secondFile) => {
     const cwd = process.cwd();

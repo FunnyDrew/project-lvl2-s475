@@ -2,6 +2,7 @@ import _ from 'lodash';
 import parser from './parser';
 import fullRender from './formaters/fullformat';
 import plainRender from './formaters/plainformat';
+import jsonRender from './formaters/jsonformat';
 
 const diff = (firstFilePath, secondFilePath, format = 'tree') => {
   const objBefore = parser(firstFilePath);
@@ -41,14 +42,23 @@ const diff = (firstFilePath, secondFilePath, format = 'tree') => {
 
     const omitedKeys = Object.keys(omitedObj);
 
-    return omitedKeys.reduce((omitedAcc, item) => [...omitedAcc, { key: item, state: 'added', value: omitedObj[item] }], mainDiff);
+    return omitedKeys.reduce((omitedAcc, item) => [...omitedAcc, { key: item, state: 'added', value: omitedObj[item], children: [],
+    }], mainDiff);
   };
 
   const ast = makeDiffAST(objBefore, objAfter, []);
 
-  if (format === 'plain') return `${plainRender(ast, '', '')}`;
+  if (format === 'plain') {
+    return `${plainRender(ast, '', '')}`;
+  }
+  if (format === 'json') {
+    const render = jsonRender(ast, 0, []);
+    console.log('!!!!!!!!!!!!!!!!!!');
+    console.log(render.join(',\n'));
+    return render.join('\n,');
+  }
+
   return `{${fullRender(ast, 0, '')}\n}`;
 };
-
 
 export default diff;

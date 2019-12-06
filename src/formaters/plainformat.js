@@ -9,15 +9,15 @@ const astRender = (diffTree, nameAcc, strAcc) => diffTree.reduce((reportAcc, cur
   const name = `${nameAcc}${current.key}`;
   if (current.state === 'unchanged') return `${reportAcc}`;
   if (current.state === 'deleted') {
-    return `${reportAcc}\n Property '${name}' ${states[current.state]()}`;
+    return `${reportAcc}Property '${name}' ${states[current.state]()}\n`;
   }
   if (current.state === 'added') {
     const value = current.value instanceof Object ? '[complex value]' : `${current.value}`;
-    return `${reportAcc}\n Property '${name}' ${states[current.state](value)}`;
+    return `${reportAcc}Property '${name}' ${states[current.state](value)}\n`;
   }
   if (current.children.length < 1) {
     const obj = current.value.map((item) => (item instanceof Object ? '[complex value]' : `${item}`));
-    return `${reportAcc}\n Property '${name}' ${states[current.state](obj[0], obj[1])}`;
+    return `${reportAcc}Property '${name}' ${states[current.state](obj[0], obj[1])}\n`;
   }
   const arg = current.children;
   const newname = `${name}.`;

@@ -1,0 +1,27 @@
+{
+  "host": {
+    "state": "unchanged",
+    "value": "hexlet.io"    
+  },
+  "time": {
+    "state": "changed",
+    "value_before": 10,
+    "value_afeter": 20
+  },
+  "old": {
+    "state": "deleted",
+    "value": {
+      "name": "Tom",
+      "age": 20,
+      "maried": true
+      }
+    },
+  "new": {
+    "state": "added",
+    "value": {
+    "name": "Jhon",
+    "age": 50,
+    "maried": false
+    }
+  }
+}

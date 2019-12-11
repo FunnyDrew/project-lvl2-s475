@@ -1,14 +1,22 @@
 {
   "host": "hexlet.io",
-  "time": 20,
-  "old": {
-    "name": "Tom",
-    "age": 20,
-    "maried": true
+  "time": "10",
+  "common": {
+    "setting1": "Value 1",
+    "setting2": "200",
+    "setting3": true,
+    "setting6": {
+      "key": "value"
+    }
   },
-  "changing": {
-    "time": "zone",
-    "ok": false,
-    "bomb": 10
+  "group1": {
+    "baz": "bas",
+    "foo": "bar",
+    "nest": {
+      "key": "value"
+    }
+  },
+  "group2": {
+    "abc": "12345"
   }
 }

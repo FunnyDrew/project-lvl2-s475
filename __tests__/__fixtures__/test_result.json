@@ -1,27 +1,82 @@
 {
   "host": {
     "state": "unchanged",
-    "value": "hexlet.io"    
+    "value": "hexlet.io"
   },
   "time": {
     "state": "changed",
-    "value_before": 10,
-    "value_afeter": 20
+    "value_before": "10",
+    "value_after": "20"
   },
-  "old": {
-    "state": "deleted",
-    "value": {
-      "name": "Tom",
-      "age": 20,
-      "maried": true
+  "common": {
+    "setting1": {
+      "state": "unchanged",
+      "value": "Value 1"
+    },
+    "setting2": {
+      "state": "deleted",
+      "value": "200"
+    },
+    "setting3": {
+      "state": "changed",
+      "value_before": true,
+      "value_after": {
+        "key": "value"
       }
     },
-  "new": {
+    "setting6": {
+      "key": {
+        "state": "unchanged",
+        "value": "value"
+      },
+      "ops": {
+        "state": "added",
+        "value": "vops"
+      }
+    },
+    "follow": {
+      "state": "added",
+      "value": false
+    },
+    "setting4": {
+      "state": "added",
+      "value": "blah blah"
+    },
+    "setting5": {
+      "state": "added",
+      "value": {
+        "key5": "value5"
+      }
+    }
+  },
+  "group1": {
+    "baz": {
+      "state": "changed",
+      "value_before": "bas",
+      "value_after": "bars"
+    },
+    "foo": {
+      "state": "unchanged",
+      "value": "bar"
+    },
+    "nest": {
+      "state": "changed",
+      "value_before": {
+        "key": "value"
+      },
+      "value_after": "str"
+    }
+  },
+  "group2": {
+    "state": "deleted",
+    "value": {
+      "abc": "12345"
+    }
+  },
+  "group3": {
     "state": "added",
     "value": {
-    "name": "Jhon",
-    "age": 50,
-    "maried": false
+      "fee": "100500"
     }
   }
 }

@@ -9,3 +9,6 @@ During we are makeing cli utility for searchind difference between two configure
 
 How to use this utilit:
 [![asciicast](https://asciinema.org/a/Km7bUOrk0ffGj5w39DO7NIfpI.svg)](https://asciinema.org/a/Km7bUOrk0ffGj5w39DO7NIfpI)
+
+How to use (end of work):
+[![asciicast](https://asciinema.org/a/x2Agy9UYDswAHB2T46evbTind.svg)](https://asciinema.org/a/x2Agy9UYDswAHB2T46evbTind)

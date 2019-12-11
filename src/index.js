@@ -42,7 +42,8 @@ const diff = (firstFilePath, secondFilePath, format = 'tree') => {
 
     const omitedKeys = Object.keys(omitedObj);
 
-    return omitedKeys.reduce((omitedAcc, item) => [...omitedAcc, { key: item, state: 'added', value: omitedObj[item], children: [],
+    return omitedKeys.reduce((omitedAcc, item) => [...omitedAcc, {
+      key: item, state: 'added', value: omitedObj[item], children: [],
     }], mainDiff);
   };
 
@@ -53,9 +54,7 @@ const diff = (firstFilePath, secondFilePath, format = 'tree') => {
   }
   if (format === 'json') {
     const render = jsonRender(ast, 0, []);
-    console.log('!!!!!!!!!!!!!!!!!!');
-    console.log(render.join(',\n'));
-    return render.join('\n,');
+    return `{\n${render.join(',\n')}\n}`;
   }
 
   return `{${fullRender(ast, 0, '')}\n}`;

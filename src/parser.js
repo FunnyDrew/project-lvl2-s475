@@ -1,24 +1,27 @@
-import path from 'path';
-import fs from 'fs';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const parser = (filepath) => {
-  const fileData = fs.readFileSync(filepath, 'utf-8');
-  const extension = path.extname(filepath);
+const parsersTypes = [
+  {
+    ext: '.json',
+    outputFnc: (fileData) => JSON.parse(fileData),
+  },
+  {
+    ext: '.yml',
+    outputFnc: (fileData) => {
+      const [parseResult] = yaml.safeLoadAll(fileData);
+      return parseResult;
+    },
+  },
+  {
+    ext: '.ini',
+    outputFnc: (fileData) => ini.parse(fileData),
+  },
+];
 
-  if (extension === '.json') return JSON.parse(fileData);
-
-  if (extension === '.yml') {
-    const [parseResult] = yaml.safeLoadAll(fileData);
-    return parseResult;
-  }
-
-  if (extension === '.ini') {
-    const parseResult = ini.parse(fileData);
-    return parseResult;
-  }
-  return {};
+const parser = (data, extension) => {
+  const { outputFnc } = parsersTypes.find(({ ext }) => ext === extension);
+  return outputFnc(data);
 };
 
 export default parser;

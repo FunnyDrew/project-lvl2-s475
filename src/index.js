@@ -1,77 +1,61 @@
 import fs from 'fs';
 import path from 'path';
-import { has, omit, isEqual } from 'lodash';
-import parser from './parser';
+import { get, isEqual, union } from 'lodash';
+import getParse from './parser';
 import treeRender from './formaters/treerender';
 import plainRender from './formaters/plainrender';
 import jsonRender from './formaters/jsonrender';
 
-const renders = [
-  {
-    type: 'tree',
-    render: (tree) => treeRender(tree),
-  },
-  {
-    type: 'plain',
-    render: (tree) => plainRender(tree),
-  },
-  {
-    type: 'json',
-    render: (tree) => jsonRender(tree),
-  },
-];
-
-const getRender = (format) => renders.find(({ type }) => type === format);
-
-const makeDiffTree = (beforeObj, afterObj, treeAcc) => {
-  const beforeObjKeys = Object.keys(beforeObj);
-  const beforeKeysTree = beforeObjKeys.reduce((keysAcc, currentKey) => {
-    if (!has(afterObj, currentKey)) {
-      return [...keysAcc, {
-        key: currentKey, state: 'deleted', value: beforeObj[currentKey], children: [],
-      }];
-    }
-
-    const curKeyBeforeValue = beforeObj[currentKey];
-    const curKeyAfterValue = afterObj[currentKey];
-
-    if (isEqual(curKeyBeforeValue, curKeyAfterValue)) {
-      return [...keysAcc, {
-        key: currentKey, state: 'unchanged', value: beforeObj[currentKey], children: [],
-      }];
-    }
-
-    if (curKeyBeforeValue instanceof Object && curKeyAfterValue instanceof Object) {
-      return [...keysAcc, {
-        key: currentKey, state: 'changed', value: {}, children: makeDiffTree(curKeyBeforeValue, curKeyAfterValue, []),
-      }];
-    }
-
-    return [...keysAcc, {
-      key: currentKey, state: 'changed', value: [beforeObj[currentKey], afterObj[currentKey]], children: [],
-    }];
-  }, treeAcc);
-
-  const omitedObj = omit(afterObj, beforeObjKeys);
-
-  const omitedKeys = Object.keys(omitedObj);
-
-  return omitedKeys.reduce((omitedAcc, item) => [...omitedAcc, {
-    key: item, state: 'added', value: omitedObj[item], children: [],
-  }], beforeKeysTree);
+const renders = {
+  tree: (arg) => treeRender(arg),
+  plain: (arg) => plainRender(arg),
+  json: (arg) => jsonRender(arg),
 };
 
+const getRender = (format) => get(renders, format);
 
-const diff = (beforeFilePath, afterFilePath, format = 'tree') => {
-  const dataBefore = fs.readFileSync(beforeFilePath, 'utf-8');
-  const dataAfter = fs.readFileSync(afterFilePath, 'utf-8');
+const makeDiffTree = (beforeObj, afterObj) => {
+  const beforeObjKeys = Object.keys(beforeObj);
+  const afterObjKeys = Object.keys(afterObj);
+  const keysUnion = union(beforeObjKeys, afterObjKeys);
 
-  const objBefore = parser(dataBefore, path.extname(beforeFilePath));
-  const objAfter = parser(dataAfter, path.extname(afterFilePath));
+  return keysUnion.map((key) => {
+    if (!beforeObjKeys.includes(key)) {
+      return {
+        key, state: 'added', value: afterObj[key], children: [],
+      };
+    }
+    if (!afterObjKeys.includes(key)) {
+      return {
+        key, state: 'deleted', value: beforeObj[key], children: [],
+      };
+    }
+    if (isEqual(beforeObj[key], afterObj[key])) {
+      return {
+        key, state: 'unchanged', value: beforeObj[key], children: [],
+      };
+    }
+    if (beforeObj[key] instanceof Object && afterObj[key] instanceof Object) {
+      return {
+        key, state: 'changed', value: {}, children: makeDiffTree(beforeObj[key], afterObj[key]),
+      };
+    }
+    return {
+      key, state: 'changed', value: [beforeObj[key], afterObj[key]], children: [],
+    };
+  });
+};
+
+const diff = (pathToBefore, pathToAfter, format = 'tree') => {
+  const dataBefore = fs.readFileSync(pathToBefore, 'utf-8');
+  const dataAfter = fs.readFileSync(pathToAfter, 'utf-8');
+
+  const objBefore = getParse(dataBefore, path.extname(pathToBefore));
+  const objAfter = getParse(dataAfter, path.extname(pathToAfter));
 
   const tree = makeDiffTree(objBefore, objAfter, []);
-  const r = getRender(format);
-  return r.render(tree);
+  const render = getRender(format);
+  return render(tree);
 };
 
 export default diff;

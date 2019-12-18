@@ -4,49 +4,40 @@ import fs from 'fs';
 import gendiff from '../src';
 
 const curentDir = __dirname;
+const pathToFixture = path.resolve(curentDir, '__fixtures__');
 
 describe.each([
-  [path.resolve(curentDir, '__fixtures__/before.json'), path.resolve(curentDir, '__fixtures__/after.json'),
-    path.resolve(curentDir, '__fixtures__/tree_test_result'), 'json'],
-  [path.resolve(curentDir, '__fixtures__/before.yml'), path.resolve(curentDir, '__fixtures__/after.yml'),
-    path.resolve(curentDir, '__fixtures__/tree_test_result'), 'yml'],
-  [path.resolve(curentDir, '__fixtures__/before.ini'), path.resolve(curentDir, '__fixtures__/after.ini'),
-    path.resolve(curentDir, '__fixtures__/tree_test_result'), 'ini'],
-
-])('testing plain files', (pathFirstFile, pathSecondFile, fileResult, naming) => {
-  test(`test tree ${naming} functionality`, () => {
-    const dataResult = fs.readFileSync(fileResult, 'utf-8');
-    expect(gendiff(pathFirstFile, pathSecondFile)).toBe(dataResult);
+  ['json'], ['yml'], ['ini'],
+])('testing tree output format', (fileExt) => {
+  test(`test tree ${fileExt} functionality`, () => {
+    const pathToBeforeFile = `${pathToFixture}/before.${fileExt}`;
+    const pathToAfterFile = `${pathToFixture}/after.${fileExt}`;
+    const pathToResult = `${pathToFixture}/tree_test_result`;
+    const dataResult = fs.readFileSync(pathToResult, 'utf-8');
+    expect(gendiff(pathToBeforeFile, pathToAfterFile)).toBe(dataResult);
   });
 });
 
 describe.each([
-  [path.resolve(curentDir, '__fixtures__/before.json'), path.resolve(curentDir, '__fixtures__/after.json'),
-    path.resolve(curentDir, '__fixtures__/plain_test_result'), 'json'],
-  [path.resolve(curentDir, '__fixtures__/before.yml'), path.resolve(curentDir, '__fixtures__/after.yml'),
-    path.resolve(curentDir, '__fixtures__/plain_test_result'), 'yml'],
-  [path.resolve(curentDir, '__fixtures__/before.ini'), path.resolve(curentDir, '__fixtures__/after.ini'),
-    path.resolve(curentDir, '__fixtures__/plain_test_result'), 'ini'],
-
-])('testing plain files', (pathFirstFile, pathSecondFile, fileResult, naming) => {
-  test(`test plain ${naming} functionality`, () => {
-    const dataResult = fs.readFileSync(fileResult, 'utf-8');
-    expect(gendiff(pathFirstFile, pathSecondFile, 'plain')).toBe(dataResult);
+  ['json'], ['yml'], ['ini'],
+])('testing plain output format', (fileExt) => {
+  test(`test plain ${fileExt} functionality`, () => {
+    const pathToBeforeFile = `${pathToFixture}/before.${fileExt}`;
+    const pathToAfterFile = `${pathToFixture}/after.${fileExt}`;
+    const pathToResult = `${pathToFixture}/plain_test_result`;
+    const dataResult = fs.readFileSync(pathToResult, 'utf-8');
+    expect(gendiff(pathToBeforeFile, pathToAfterFile, 'plain')).toBe(dataResult);
   });
 });
 
 describe.each([
-  [path.resolve(curentDir, '__fixtures__/before.json'), path.resolve(curentDir, '__fixtures__/after.json'),
-    path.resolve(curentDir, '__fixtures__/test_result.json'), 'json'],
-  [path.resolve(curentDir, '__fixtures__/before.yml'), path.resolve(curentDir, '__fixtures__/after.yml'),
-    path.resolve(curentDir, '__fixtures__//test_result.json'), 'yml'],
-  [path.resolve(curentDir, '__fixtures__/before.ini'), path.resolve(curentDir, '__fixtures__/after.ini'),
-    path.resolve(curentDir, '__fixtures__//test_result.json'), 'ini'],
-
-])('testing plain files', (pathFirstFile, pathSecondFile, fileResult, naming) => {
-  test(`test plain ${naming} functionality`, () => {
-    const dataResult = fs.readFileSync(fileResult, 'utf-8');
-    expect(JSON.parse(dataResult) instanceof Object).toBe(true);
-    expect(gendiff(pathFirstFile, pathSecondFile, 'json')).toBe(dataResult);
+  ['json'], ['yml'], ['ini'],
+])('testing json output format', (fileExt) => {
+  test(`test json ${fileExt} functionality`, () => {
+    const pathToBeforeFile = `${pathToFixture}/before.${fileExt}`;
+    const pathToAfterFile = `${pathToFixture}/after.${fileExt}`;
+    const pathToResult = `${pathToFixture}/test_result.json`;
+    const dataResult = fs.readFileSync(pathToResult, 'utf-8');
+    expect(gendiff(pathToBeforeFile, pathToAfterFile, 'json')).toBe(dataResult);
   });
 });

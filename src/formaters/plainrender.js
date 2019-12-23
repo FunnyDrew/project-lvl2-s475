@@ -1,3 +1,4 @@
+import { has } from 'lodash';
 
 const states = {
   deleted: () => 'was removed',
@@ -15,7 +16,7 @@ const render = (tree, nameAcc, logAcc) => tree.reduce((acc, node) => {
     const value = node.value instanceof Object ? '[complex value]' : `${node.value}`;
     return `${acc}Property '${name}' ${states[node.state](value)}\n`;
   }
-  if (node.children.length < 1) {
+  if (!has(node, 'children')) {
     const obj = node.value.map((item) => (item instanceof Object ? '[complex value]' : `${item}`));
     return `${acc}Property '${name}' ${states[node.state](obj[0], obj[1])}\n`;
   }

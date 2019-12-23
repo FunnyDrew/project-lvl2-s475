@@ -1,18 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { get, isEqual, union } from 'lodash';
+import { isEqual, union } from 'lodash';
 import getParse from './parser';
-import treeRender from './formaters/treerender';
-import plainRender from './formaters/plainrender';
-import jsonRender from './formaters/jsonrender';
-
-const renders = {
-  tree: (arg) => treeRender(arg),
-  plain: (arg) => plainRender(arg),
-  json: (arg) => jsonRender(arg),
-};
-
-const getRender = (format) => get(renders, format);
+import getRender from './formaters/index';
 
 const makeDiffTree = (beforeObj, afterObj) => {
   const beforeObjKeys = Object.keys(beforeObj);
@@ -22,17 +12,17 @@ const makeDiffTree = (beforeObj, afterObj) => {
   return keysUnion.map((key) => {
     if (!beforeObjKeys.includes(key)) {
       return {
-        key, state: 'added', value: afterObj[key], children: [],
+        key, state: 'added', value: afterObj[key],
       };
     }
     if (!afterObjKeys.includes(key)) {
       return {
-        key, state: 'deleted', value: beforeObj[key], children: [],
+        key, state: 'deleted', value: beforeObj[key],
       };
     }
     if (isEqual(beforeObj[key], afterObj[key])) {
       return {
-        key, state: 'unchanged', value: beforeObj[key], children: [],
+        key, state: 'unchanged', value: beforeObj[key],
       };
     }
     if (beforeObj[key] instanceof Object && afterObj[key] instanceof Object) {
@@ -41,7 +31,7 @@ const makeDiffTree = (beforeObj, afterObj) => {
       };
     }
     return {
-      key, state: 'changed', value: [beforeObj[key], afterObj[key]], children: [],
+      key, state: 'changed', value: [beforeObj[key], afterObj[key]],
     };
   });
 };

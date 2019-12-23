@@ -13,31 +13,33 @@ const stringify = (arg, indentLevel, accStr) => {
   return `{${result}\n  ${makeIndent(indentLevel)}}`;
 };
 
-const states = {
-  deleted: '-',
-  unchanged: ' ',
-  added: '+',
-};
-
-const hasChildren = (node) => node.children.length > 0;
-
 const render = (tree, indentLevel, renderAcc) => tree.reduce((acc, node) => {
-  if (has(states, node.state)) {
+  if (node.state === 'added') {
     return [...acc, [makeIndent(indentLevel),
-      states[node.state], ` ${node.key}: `,
+      '+', ` ${node.key}: `,
       stringify(node.value, indentLevel)].join('')];
   }
-  if (!hasChildren(node)) {
-    const [valueBefore, valueAfter] = node.value;
+  if (node.state === 'unchanged') {
     return [...acc, [makeIndent(indentLevel),
-      `- ${node.key}: `, stringify(valueBefore, indentLevel)].join(''),
-    [makeIndent(indentLevel), `+ ${node.key}: `, stringify(valueAfter, indentLevel)].join('')];
+      ' ', ` ${node.key}: `,
+      stringify(node.value, indentLevel)].join('')];
+  }
+  if (node.state === 'deleted') {
+    return [...acc, [makeIndent(indentLevel),
+      '-', ` ${node.key}: `,
+      stringify(node.value, indentLevel)].join('')];
   }
 
-  const arg = node.children;
-  return [...acc, `${makeIndent(indentLevel)}  ${node.key}: {`,
-    render(arg, indentLevel + 1, renderAcc).join('\n'),
-    `  ${makeIndent(indentLevel)}}`];
+  if (has(node, 'children')) {
+    const arg = node.children;
+    return [...acc, `${makeIndent(indentLevel)}  ${node.key}: {`,
+      render(arg, indentLevel + 1, renderAcc).join('\n'),
+      `  ${makeIndent(indentLevel)}}`];
+  }
+  const [valueBefore, valueAfter] = node.value;
+  return [...acc, [makeIndent(indentLevel),
+    `- ${node.key}: `, stringify(valueBefore, indentLevel)].join(''),
+  [makeIndent(indentLevel), `+ ${node.key}: `, stringify(valueAfter, indentLevel)].join('')];
 },
 renderAcc);
 

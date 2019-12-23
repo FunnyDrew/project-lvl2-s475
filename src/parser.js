@@ -1,27 +1,15 @@
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const parsersTypes = [
-  {
-    ext: '.json',
-    outputFnc: (fileData) => JSON.parse(fileData),
+const parserTypes = {
+  '.json': (fileData) => JSON.parse(fileData),
+  '.yml': (fileData) => {
+    const [parseResult] = yaml.safeLoadAll(fileData);
+    return parseResult;
   },
-  {
-    ext: '.yml',
-    outputFnc: (fileData) => {
-      const [parseResult] = yaml.safeLoadAll(fileData);
-      return parseResult;
-    },
-  },
-  {
-    ext: '.ini',
-    outputFnc: (fileData) => ini.parse(fileData),
-  },
-];
-
-const parser = (data, extension) => {
-  const { outputFnc } = parsersTypes.find(({ ext }) => ext === extension);
-  return outputFnc(data);
+  '.ini': (fileData) => ini.parse(fileData),
 };
+
+const parser = (data, extension) => parserTypes[extension](data);
 
 export default parser;

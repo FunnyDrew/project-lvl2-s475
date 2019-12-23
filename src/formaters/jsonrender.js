@@ -1,8 +1,6 @@
-import { isObject } from 'lodash';
+import { isObject, has } from 'lodash';
 
 const makeIndent = (level) => `${' '.repeat(2 * (level + 1))}`;
-
-const hasChildren = (node) => node.children.length > 0;
 
 const stringify = (arg, indentLevel, accStr) => {
   if (!isObject(arg)) return `${JSON.stringify(arg)}`;
@@ -16,8 +14,8 @@ const stringify = (arg, indentLevel, accStr) => {
 };
 
 const render = (tree, indentLevel, renderAcc) => tree.reduce((acc, node) => {
-  if (!hasChildren(node)) {
-    if (node.value instanceof Array) {
+  if (node.state === 'changed') {
+    if (!has(node, 'children')) {
       return [...acc, [makeIndent(indentLevel), `"${node.key}": {\n`,
         makeIndent(indentLevel + 1), `"state": "${node.state}",\n`,
         makeIndent(indentLevel + 1), '"value_before": ', stringify(node.value[0], indentLevel), ',\n',
@@ -25,12 +23,12 @@ const render = (tree, indentLevel, renderAcc) => tree.reduce((acc, node) => {
         makeIndent(indentLevel), '}'].join('')];
     }
     return [...acc, [makeIndent(indentLevel), `"${node.key}": {\n`,
-      makeIndent(indentLevel + 1), `"state": "${node.state}",\n`,
-      makeIndent(indentLevel + 1), '"value": ', stringify(node.value, indentLevel), '\n',
+      render(node.children, indentLevel + 1, renderAcc).join(',\n'), '\n',
       makeIndent(indentLevel), '}'].join('')];
   }
   return [...acc, [makeIndent(indentLevel), `"${node.key}": {\n`,
-    render(node.children, indentLevel + 1, renderAcc).join(',\n'), '\n',
+    makeIndent(indentLevel + 1), `"state": "${node.state}",\n`,
+    makeIndent(indentLevel + 1), '"value": ', stringify(node.value, indentLevel), '\n',
     makeIndent(indentLevel), '}'].join('')];
 }, renderAcc);
 

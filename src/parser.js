@@ -2,12 +2,12 @@ import yaml from 'js-yaml';
 import ini from 'ini';
 
 const parserTypes = {
-  '.json': (fileData) => JSON.parse(fileData),
-  '.yml': (fileData) => {
+  json: JSON.parse,
+  yml: (fileData) => {
     const [parseResult] = yaml.safeLoadAll(fileData);
     return parseResult;
   },
-  '.ini': (fileData) => ini.parse(fileData),
+  ini: ini.parse,
 };
 
 const parser = (data, extension) => parserTypes[extension](data);

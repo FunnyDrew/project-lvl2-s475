@@ -1,8 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import { isEqual, union } from 'lodash';
-import getParse from './parser';
-import getRender from './formaters/index';
+import parse from './parser';
+import getRender from './formaters';
+
+const getFileExtension = (pathToFile) => {
+  const [, extension] = path.extname(pathToFile).split('.');
+  return extension;
+};
 
 const makeDiffTree = (beforeObj, afterObj) => {
   const beforeObjKeys = Object.keys(beforeObj);
@@ -40,8 +45,8 @@ const diff = (pathToBefore, pathToAfter, format = 'tree') => {
   const dataBefore = fs.readFileSync(pathToBefore, 'utf-8');
   const dataAfter = fs.readFileSync(pathToAfter, 'utf-8');
 
-  const objBefore = getParse(dataBefore, path.extname(pathToBefore));
-  const objAfter = getParse(dataAfter, path.extname(pathToAfter));
+  const objBefore = parse(dataBefore, getFileExtension(pathToBefore));
+  const objAfter = parse(dataAfter, getFileExtension(pathToAfter));
 
   const tree = makeDiffTree(objBefore, objAfter, []);
   const render = getRender(format);

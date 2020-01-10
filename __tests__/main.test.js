@@ -19,7 +19,7 @@ describe.each([
 });
 
 describe.each([
-  ['json'],
+  ['json'], ['yml'], ['ini'],
 ])('testing plain output format', (fileExt) => {
   test(`test plain ${fileExt} functionality`, () => {
     const pathToBeforeFile = `${pathToFixture}/before.${fileExt}`;

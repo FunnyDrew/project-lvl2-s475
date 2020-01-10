@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { isEqual, union } from 'lodash';
+import {
+  isEqual, union, has, isObject,
+} from 'lodash';
 import parse from './parser';
 import getRender from './formaters';
 
@@ -10,33 +12,30 @@ const getFileExtension = (pathToFile) => {
 };
 
 const makeDiffTree = (beforeObj, afterObj) => {
-  const beforeObjKeys = Object.keys(beforeObj);
-  const afterObjKeys = Object.keys(afterObj);
-  const keysUnion = union(beforeObjKeys, afterObjKeys);
-
+  const keysUnion = union(Object.keys(beforeObj), Object.keys(afterObj));
   return keysUnion.map((key) => {
-    if (!beforeObjKeys.includes(key)) {
+    if (!has(beforeObj, key)) {
       return {
-        key, state: 'added', value: afterObj[key],
+        key, type: 'added', value: afterObj[key],
       };
     }
-    if (!afterObjKeys.includes(key)) {
+    if (!has(afterObj, key)) {
       return {
-        key, state: 'deleted', value: beforeObj[key],
+        key, type: 'deleted', value: beforeObj[key],
       };
     }
     if (isEqual(beforeObj[key], afterObj[key])) {
       return {
-        key, state: 'unchanged', value: beforeObj[key],
+        key, type: 'unchanged', value: beforeObj[key],
       };
     }
-    if (beforeObj[key] instanceof Object && afterObj[key] instanceof Object) {
+    if (isObject(beforeObj[key]) && isObject(afterObj[key])) {
       return {
-        key, state: 'changed', value: {}, children: makeDiffTree(beforeObj[key], afterObj[key]),
+        key, type: 'complex', children: makeDiffTree(beforeObj[key], afterObj[key]),
       };
     }
     return {
-      key, state: 'changed', value: [beforeObj[key], afterObj[key]],
+      key, type: 'changed', before: beforeObj[key], after: afterObj[key],
     };
   });
 };
@@ -48,7 +47,7 @@ const diff = (pathToBefore, pathToAfter, format = 'tree') => {
   const objBefore = parse(dataBefore, getFileExtension(pathToBefore));
   const objAfter = parse(dataAfter, getFileExtension(pathToAfter));
 
-  const tree = makeDiffTree(objBefore, objAfter, []);
+  const tree = makeDiffTree(objBefore, objAfter);
   const render = getRender(format);
   return render(tree);
 };

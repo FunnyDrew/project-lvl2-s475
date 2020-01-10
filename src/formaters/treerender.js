@@ -1,4 +1,4 @@
-import { isObject, has } from 'lodash';
+import { isObject } from 'lodash';
 
 
 const makeIndent = (level) => `${' '.repeat(2 * (2 * level + 1))}`;
@@ -13,36 +13,36 @@ const stringify = (arg, indentLevel, accStr) => {
   return `{${result}\n  ${makeIndent(indentLevel)}}`;
 };
 
-const render = (tree, indentLevel, renderAcc) => tree.reduce((acc, node) => {
-  if (node.state === 'added') {
-    return [...acc, [makeIndent(indentLevel),
-      '+', ` ${node.key}: `,
-      stringify(node.value, indentLevel)].join('')];
-  }
-  if (node.state === 'unchanged') {
-    return [...acc, [makeIndent(indentLevel),
-      ' ', ` ${node.key}: `,
-      stringify(node.value, indentLevel)].join('')];
-  }
-  if (node.state === 'deleted') {
-    return [...acc, [makeIndent(indentLevel),
-      '-', ` ${node.key}: `,
-      stringify(node.value, indentLevel)].join('')];
-  }
+const render = (tree, indentLevel) => {
+  const renderString = tree.map((node) => {
+    switch (node.type) {
+      case 'added': return [makeIndent(indentLevel),
+        '+', ` ${node.key}: `,
+        stringify(node.value, indentLevel)].join('');
 
-  if (has(node, 'children')) {
-    const arg = node.children;
-    return [...acc, `${makeIndent(indentLevel)}  ${node.key}: {`,
-      render(arg, indentLevel + 1, renderAcc).join('\n'),
-      `  ${makeIndent(indentLevel)}}`];
-  }
-  const [valueBefore, valueAfter] = node.value;
-  return [...acc, [makeIndent(indentLevel),
-    `- ${node.key}: `, stringify(valueBefore, indentLevel)].join(''),
-  [makeIndent(indentLevel), `+ ${node.key}: `, stringify(valueAfter, indentLevel)].join('')];
-},
-renderAcc);
+      case 'unchanged': return [makeIndent(indentLevel),
+        ' ', ` ${node.key}: `,
+        stringify(node.value, indentLevel)].join('');
 
-const makeRender = (tree) => `{\n${render(tree, 0, []).join('\n')}\n}`;
+      case 'deleted': return [makeIndent(indentLevel),
+        '-', ` ${node.key}: `,
+        stringify(node.value, indentLevel)].join('');
+
+      case 'changed': return [makeIndent(indentLevel),
+        `- ${node.key}: `, stringify(node.before, indentLevel), '\n',
+        makeIndent(indentLevel), `+ ${node.key}: `, stringify(node.after, indentLevel)].join('');
+
+      case 'complex': return [makeIndent(indentLevel), ' ', ` ${node.key}: `,
+        render(node.children, indentLevel + 1)].join('');
+
+      default: return '';
+    }
+  });
+
+  const lastBracket = indentLevel === 0 ? '}' : `${makeIndent(indentLevel - 1)}  }`;
+  return ['{', ...renderString, lastBracket].join('\n');
+};
+
+const makeRender = (tree) => render(tree, 0);
 
 export default makeRender;

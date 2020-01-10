@@ -1,49 +1,49 @@
 {
   "host": {
-    "state": "unchanged",
+    "type": "unchanged",
     "value": "hexlet.io"
   },
   "time": {
-    "state": "changed",
-    "value_before": "10",
-    "value_after": "20"
+    "type": "changed",
+    "before": "10",
+    "after": "20"
   },
   "common": {
     "setting1": {
-      "state": "unchanged",
+      "type": "unchanged",
       "value": "Value 1"
     },
     "setting2": {
-      "state": "deleted",
+      "type": "deleted",
       "value": "200"
     },
     "setting3": {
-      "state": "changed",
-      "value_before": true,
-      "value_after": {
+      "type": "changed",
+      "before": true,
+      "after": {
         "key": "value"
       }
     },
     "setting6": {
       "key": {
-        "state": "unchanged",
+        "type": "unchanged",
         "value": "value"
       },
       "ops": {
-        "state": "added",
+        "type": "added",
         "value": "vops"
       }
     },
     "follow": {
-      "state": "added",
+      "type": "added",
       "value": false
     },
     "setting4": {
-      "state": "added",
+      "type": "added",
       "value": "blah blah"
     },
     "setting5": {
-      "state": "added",
+      "type": "added",
       "value": {
         "key5": "value5"
       }
@@ -51,30 +51,30 @@
   },
   "group1": {
     "baz": {
-      "state": "changed",
-      "value_before": "bas",
-      "value_after": "bars"
+      "type": "changed",
+      "before": "bas",
+      "after": "bars"
     },
     "foo": {
-      "state": "unchanged",
+      "type": "unchanged",
       "value": "bar"
     },
     "nest": {
-      "state": "changed",
-      "value_before": {
+      "type": "changed",
+      "before": {
         "key": "value"
       },
-      "value_after": "str"
+      "after": "str"
     }
   },
   "group2": {
-    "state": "deleted",
+    "type": "deleted",
     "value": {
       "abc": "12345"
     }
   },
   "group3": {
-    "state": "added",
+    "type": "added",
     "value": {
       "fee": "100500"
     }

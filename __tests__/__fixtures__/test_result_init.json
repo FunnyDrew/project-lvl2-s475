@@ -1,0 +1,82 @@
+{
+  "host": {
+    "type": "unchanged",
+    "value": "hexlet.io"
+  },
+  "time": {
+    "type": "changed",
+    "before": "10",
+    "after": "20"
+  },
+  "common": {
+    "setting1": {
+      "type": "unchanged",
+      "value": "Value 1"
+    },
+    "setting2": {
+      "type": "deleted",
+      "value": "200"
+    },
+    "setting3": {
+      "type": "changed",
+      "before": true,
+      "after": {
+        "key": "value"
+      }
+    },
+    "setting6": {
+      "key": {
+        "type": "unchanged",
+        "value": "value"
+      },
+      "ops": {
+        "type": "added",
+        "value": "vops"
+      }
+    },
+    "follow": {
+      "type": "added",
+      "value": false
+    },
+    "setting4": {
+      "type": "added",
+      "value": "blah blah"
+    },
+    "setting5": {
+      "type": "added",
+      "value": {
+        "key5": "value5"
+      }
+    }
+  },
+  "group1": {
+    "baz": {
+      "type": "changed",
+      "before": "bas",
+      "after": "bars"
+    },
+    "foo": {
+      "type": "unchanged",
+      "value": "bar"
+    },
+    "nest": {
+      "type": "changed",
+      "before": {
+        "key": "value"
+      },
+      "after": "str"
+    }
+  },
+  "group2": {
+    "type": "deleted",
+    "value": {
+      "abc": "12345"
+    }
+  },
+  "group3": {
+    "type": "added",
+    "value": {
+      "fee": "100500"
+    }
+  }
+}

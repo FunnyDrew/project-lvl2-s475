@@ -1,45 +1,42 @@
 import { isObject } from 'lodash';
 
 
-const makeIndent = (level) => `${' '.repeat(2 * (2 * level + 1))}`;
+const makeIndent = (depth) => `${' '.repeat(2 * (2 * depth + 1))}`;
 
-const stringify = (arg, indentLevel, accStr) => {
+const stringify = (arg, depth) => {
   if (!isObject(arg)) return `${arg}`;
   const keys = Object.keys(arg);
-  const result = keys.reduce((keyAcc, key) => {
-    const value = arg[key] instanceof Object ? `${stringify(arg[key], indentLevel + 1, accStr)}` : `${arg[key]}`;
-    return `${keyAcc}\n  ${makeIndent(indentLevel + 1)}${key}: ${value}`;
-  }, '');
-  return `{${result}\n  ${makeIndent(indentLevel)}}`;
+  const result = keys.map((key) => {
+    const value = isObject(arg[key]) ? stringify(arg[key], depth + 1).join('\n') : `${arg[key]}`;
+    return `${makeIndent(depth + 1)}  ${key}: ${value}`;
+  });
+  return ['{', result, `${makeIndent(depth)}  }`].join('\n');
 };
 
-const render = (tree, indentLevel) => {
+const render = (tree, depth) => {
   const renderString = tree.map((node) => {
     switch (node.type) {
-      case 'added': return [makeIndent(indentLevel),
-        '+', ` ${node.key}: `,
-        stringify(node.value, indentLevel)].join('');
+      case 'added':
+        return [makeIndent(depth), '+', ` ${node.key}: `, stringify(node.value, depth)].join('');
 
-      case 'unchanged': return [makeIndent(indentLevel),
-        ' ', ` ${node.key}: `,
-        stringify(node.value, indentLevel)].join('');
+      case 'unchanged':
+        return [makeIndent(depth), ' ', ` ${node.key}: `, stringify(node.value, depth)].join('');
 
-      case 'deleted': return [makeIndent(indentLevel),
-        '-', ` ${node.key}: `,
-        stringify(node.value, indentLevel)].join('');
+      case 'deleted':
+        return [makeIndent(depth), '-', ` ${node.key}: `, stringify(node.value, depth)].join('');
 
-      case 'changed': return [makeIndent(indentLevel),
-        `- ${node.key}: `, stringify(node.before, indentLevel), '\n',
-        makeIndent(indentLevel), `+ ${node.key}: `, stringify(node.after, indentLevel)].join('');
+      case 'changed':
+        return [makeIndent(depth), `- ${node.key}: `, stringify(node.before, depth), '\n',
+          makeIndent(depth), `+ ${node.key}: `, stringify(node.after, depth)].join('');
 
-      case 'complex': return [makeIndent(indentLevel), ' ', ` ${node.key}: `,
-        render(node.children, indentLevel + 1)].join('');
+      case 'complex':
+        return [makeIndent(depth), ' ', ` ${node.key}: `, render(node.children, depth + 1)].join('');
 
-      default: return '';
+      default: throw Error('Unaceptable data type in ast-tree');
     }
   });
 
-  const lastBracket = indentLevel === 0 ? '}' : `${makeIndent(indentLevel - 1)}  }`;
+  const lastBracket = depth === 0 ? '}' : `${makeIndent(depth - 1)}  }`;
   return ['{', ...renderString, lastBracket].join('\n');
 };
 

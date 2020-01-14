@@ -16,7 +16,7 @@ const render = (tree, nameAcc, logAcc) => tree.reduce((acc, node) => {
       } to ${elementToStr(node.after)}\n`;
     case 'complex':
       return `${acc}${render(node.children, `${name}.`, logAcc)}`;
-    default: return '';
+    default: throw Error('Unacceptable data type in ast-tree');
   }
 },
 logAcc);

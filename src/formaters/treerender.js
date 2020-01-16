@@ -4,7 +4,7 @@ import { isObject } from 'lodash';
 const makeIndent = (depth) => `${' '.repeat(2 * (2 * depth + 1))}`;
 
 const stringify = (arg, depth) => {
-  if (!isObject(arg)) return `${arg}`;
+  if (!isObject(arg)) return arg;
   const keys = Object.keys(arg);
   const result = keys.map((key) => {
     const value = isObject(arg[key]) ? stringify(arg[key], depth + 1).join('\n') : `${arg[key]}`;

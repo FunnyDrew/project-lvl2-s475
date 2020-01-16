@@ -2,25 +2,28 @@
 const elementToStr = (obj) => (obj instanceof Object ? '[complex value]' : `${obj}`);
 
 
-const render = (tree, nameAcc, logAcc) => tree.reduce((acc, node) => {
-  const name = `${nameAcc}${node.key}`;
-  switch (node.type) {
-    case 'unchanged':
-      return `${acc}`;
-    case 'deleted':
-      return `${acc}Property '${name}' was removed\n`;
-    case 'added':
-      return `${acc}Property '${name}' was added with value: ${elementToStr(node.value)}\n`;
-    case 'changed':
-      return `${acc}Property '${name}' was updated. From ${elementToStr(node.before)
-      } to ${elementToStr(node.after)}\n`;
-    case 'complex':
-      return `${acc}${render(node.children, `${name}.`, logAcc)}`;
-    default: throw Error('Unacceptable data type in ast-tree');
-  }
-},
-logAcc);
+const render = (tree, nameAcc) => {
+  const nodeStates = tree.map((node) => {
+    const name = `${nameAcc}${node.key}`;
+    switch (node.type) {
+      case 'unchanged':
+        return '';
+      case 'deleted':
+        return `Property '${name}' was removed`;
+      case 'added':
+        return `Property '${name}' was added with value: ${elementToStr(node.value)}`;
+      case 'changed':
+        return `Property '${name}' was updated. From ${elementToStr(node.before)
+        } to ${elementToStr(node.after)}`;
+      case 'complex':
+        return render(node.children, `${name}.`);
+      default: throw Error('Unacceptable data type in ast-tree');
+    }
+  });
 
-const makeRender = (tree) => `${render(tree, '', '')}`;
+  return nodeStates.filter((item) => item !== '').join('\n');
+};
+
+const makeRender = (tree) => render(tree, '');
 
 export default makeRender;

@@ -6,10 +6,7 @@ import {
 import parse from './parser';
 import getRender from './formaters';
 
-const getFileExtension = (pathToFile) => {
-  const [, extension] = path.extname(pathToFile).split('.');
-  return extension;
-};
+const getFileExtension = (pathToFile) => path.extname(pathToFile).slice(1);
 
 const makeDiffTree = (beforeObj, afterObj) => {
   const keysUnion = union(Object.keys(beforeObj), Object.keys(afterObj));

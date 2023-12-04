@@ -1,5 +1,5 @@
 Study Hexlet project.
-Учебный проект [![Hexlet](https://hexlet.io)]. Создание командной утилиты для сравнения двух файлов.
+Учебный проект [Hexlet](https://hexlet.io). Создание командной утилиты для сравнения двух файлов.
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/e0ec7b5f9b065a50f9bf/maintainability)](https://codeclimate.com/github/FunnyDrew/project-lvl2-s475/maintainability)
 
